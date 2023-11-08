@@ -15,6 +15,9 @@ using Aspose.Words;
 using Aspose.Cells;
 using Aspose.Slides;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Data;
+using Aspose.Pdf.Facades;
+using Aspose.Words.Pdf2Word.FixedFormats;
 
 namespace Services
 {
@@ -30,6 +33,9 @@ namespace Services
         Task<DocumentDTO> Create(DocumentDTO payload, IFormFile[] files);
         Task<IEnumerable<DocumentDTO>> GetDocumentsByDate(DateTime From, DateTime To);
 
+        Task<ChartRequests> GetDocumentsByCharMonth();
+        Task<pieData> pieData();
+
     }
     public class DocumentService : IDocumentService
     {
@@ -41,7 +47,7 @@ namespace Services
         private readonly ICommentRepository _commentRepository;
         private readonly IDocumentApprovalRepository _documentApprovalRepository;
         private readonly INotificationService _notificationService;
-        private readonly QLTTrContext context;
+        private readonly QLTTrContext _context;
 
         public DocumentService(
             IDocumentRepository documentRepository, 
@@ -61,6 +67,7 @@ namespace Services
             this._commentRepository = commentRepository;
             this._documentApprovalRepository = documentApprovalRepository;
             this._notificationService = notificationService;
+            this._context = context;    
         }
         public async Task<IEnumerable<DocumentDTO>> GetDocumentsByDate(DateTime From, DateTime To)
         {
@@ -86,6 +93,97 @@ namespace Services
 
             return resultList;
         }
+
+        public async Task<ChartRequests> GetDocumentsByCharMonth()
+        {
+            await UpdateOverdueStatus();
+            await UpdateApprovalStatus();
+
+            // Assuming _documentRepository.GetDocumentCountByMonth(month) is the method to get counts of documents per month.
+            List<int> documentCounts = new List<int>();
+            for (int month = 1; month <= 12; month++)
+            {
+                int count = await _documentRepository.GetDocumentCountByMonth(month);
+                documentCounts.Add(count);
+            }
+
+            DatasetsChart datasetsChart = new DatasetsChart()
+            {
+                label = "Tờ trình trong tháng",
+                fill = false,
+                borderWidth = 2,
+                lineTension = 0,
+                spanGaps = true,
+                borderColor = "#efefef",
+                pointRadius = 3,
+                pointHoverRadius = 7,
+                pointColor = "#efefef",
+                pointBackgroundColor = "#efefef",
+                data = documentCounts.ToArray() // Assign the counts to the 'data' property
+            };
+
+            ChartRequests chart = new ChartRequests()
+            {
+                labels = new string[] { "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12" },
+                datasets = datasetsChart
+            };
+
+            return chart;
+        }
+        public async Task<pieData> pieData()
+        {
+            var fieldIdGroups = _documentRepository.GetAll()
+                .GroupBy(x => x.FieldId)
+                .ToList();
+
+            List<int> data = new List<int>();
+            List<string> labels = new List<string>();
+            List<string> backgroundColor = new List<string>();
+
+            var fieldIds = fieldIdGroups.Select(g => g.Key).ToList();
+
+            var fieldTitles = _context.TblFields
+                .Where(field => fieldIds.Contains(field.Id))
+                .ToDictionary(field => field.Id, field => field.Title);
+
+            foreach (var group in fieldIdGroups)
+            {
+                int key = group.Key ?? 0;
+                if (fieldTitles.TryGetValue(key, out var title))
+                {
+                    labels.Add(title);
+                }
+                else
+                {
+                    labels.Add($"FieldId: {group.Key}");
+                }
+
+                data.Add(group.Count());
+
+                // Generating random hex color code
+                string color = $"#{new Random().Next(0x1000000):X6}";
+                backgroundColor.Add(color);
+            }
+
+            var datasetsPie = new List<datasetspie>
+                {
+                    new datasetspie
+                    {
+                        data = data.ToArray(),
+                        backgroundColor = backgroundColor.ToArray()
+                    }
+                };
+
+                        var pieData = new pieData
+                        {
+                            labels = labels.ToArray(),
+                            datasetspies = datasetsPie
+                        };
+
+            return pieData;
+        }
+
+
         public async Task<IEnumerable<DocumentDTO>> GetAllDocumentByStatusCode(int? statusCode)
         {
             await UpdateOverdueStatus();

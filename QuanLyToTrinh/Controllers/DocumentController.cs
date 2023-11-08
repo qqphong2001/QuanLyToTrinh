@@ -48,6 +48,37 @@ namespace QuanLyToTrinh.Controllers
                 return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
             }
         }
+
+        [HttpGet("GetDocumentsPie")]
+        public async Task<IActionResult> GetDocumentsPie()
+        {
+            try
+            {
+
+                var result = await documentService.pieData();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
+            }
+        }
+        [HttpGet("GetDocumentsChartMonth")]
+        public async Task<IActionResult> GetDocumentsChartMonth()
+        {
+            try
+            {
+
+                var result = await documentService.GetDocumentsByCharMonth();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
+            }
+        }
         [HttpGet("GetAllDocument/{statusCode}")]
         public async Task<IActionResult> GetAllDocumentByStatusCode(int? statusCode)
         {
