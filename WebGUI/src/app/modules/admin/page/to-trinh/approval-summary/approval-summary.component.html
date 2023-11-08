@@ -1,0 +1,75 @@
+<app-admin-header [title]="'QUẢN LÝ TỜ TRÌNH / Kết quả duyệt tờ trình'"></app-admin-header>
+<div class="d-flex justify-content-evenly flex-wrap flex-md-nowrap my-3">
+    <input type="text" placeholder="Tiêu đề" class="form-control m-1">
+    <input type="text" placeholder="Tác giả" class="form-control m-1">
+    <select placeholder="Lĩnh vực" class="form-control m-1">
+        <option value="--Lĩnh vực--">Chọn lĩnh vực</option>
+        <option value="--Lĩnh vực--">Văn hóa</option>
+        <option value="--Lĩnh vực--">Thể thao</option>
+        <option value="--Lĩnh vực--">Y tế</option>
+        <option value="--Lĩnh vực--">Thông tin truyền thông</option>
+    </select>
+    <!-- <input type="text" placeholder="Trạng thái" class="form-control"> -->
+    <input matTooltip="Từ ngày" type="date" placeholder="Từ ngày" class="form-control m-1">
+    <input matTooltip="Đến ngày" type="date" placeholder="Đến ngày" class="form-control m-1">
+    <button class="btn btn-outline-info form-control m-1">Lọc kết quả</button>
+</div>
+<div style="overflow-x: scroll;">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="bg-ligth">
+                <th [rowSpan]="2">STT</th>
+                <th [rowSpan]="2">Tiêu đề tờ trình</th>
+                <th [rowSpan]="2">Lĩnh vực</th>
+                <th [rowSpan]="2">Ngày trình</th>
+                <th [rowSpan]="2">Hạn phê duyệt</th>
+                <th [rowSpan]="2">Thời gian kết thúc</th>
+                <th [colSpan]="3">Kết quả phê duyệt của ban cán sự đảng</th>
+            </tr>            
+            <tr class="bg-light">
+                <th>Phê duyệt</th>
+                <th>Không phê duyệt</th>
+                <th>Chưa phê duyệt</th>
+            </tr>
+        </thead>
+        <tbody>            
+            <tr *ngFor="let item of summaryData; let i = index;">
+                <td>
+                    {{i + 1}}
+                </td>
+                <td>
+                    {{item.title}}
+                </td>
+                <td>
+                    {{item.field}}
+                </td>
+                <td>
+                    {{item.submittedAt | date: 'hh:mm aaa dd/MM/YYYY'}}
+                </td>
+                <td>
+                    {{item.deadlineAt | date: 'dd/MM/YYYY'}}
+                </td>
+                <td>
+                    {{item.endAt| date: 'dd/MM/YYYY'}}
+                </td>
+                <td>
+                    <tr *ngFor="let t of item.approvals">
+                        <td style="min-width: 120px;">{{t}}</td>
+                    </tr>
+                </td>
+                <td>
+                    <tr *ngFor="let t of item.declines">
+                        <td style="min-width: 120px;">{{t}}</td>
+                    </tr>
+                </td>
+                <td>
+                    <tr *ngFor="let t of item.noResponses">
+                        <td style="min-width: 120px;">{{t}}</td>
+                    </tr>
+                </td>
+            </tr>
+        
+            
+        </tbody>
+    </table>
+</div>

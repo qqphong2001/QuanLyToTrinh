@@ -1,0 +1,13 @@
+i {
+    cursor: pointer;
+}
+
+i:hover{
+    transform: scale(1.05);
+    transition-duration: 0.5s;
+    color: #16a085;
+}
+
+.icon-container {
+    display: block;
+}

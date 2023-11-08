@@ -1,0 +1,138 @@
+<app-admin-header [title]="'QUẢN LÝ TỜ TRÌNH / Thêm mới tờ trình'"></app-admin-header>
+<div class="container">
+    <mat-spinner
+        style="position: absolute; left: 50%; top: 50%; height: 20%; width: 20%; transform: translate(-50%, -50%); z-index: 100;"
+        *ngIf="waitForResponse"></mat-spinner>
+    <div class="row">
+        <h5>Thông tin</h5>
+        <div class="col-md-7">
+            <div class="row">
+
+                <div class="mb-3">
+                    <label>Tiêu đề tờ trình*</label>
+                    <textarea rows="8" class="form-control" [(ngModel)]="data.title"></textarea>
+                </div>
+                <!-- <div class="mb-3">
+                    <label class="me-2">Lĩnh vực</label>
+                    <div class="d-flex">
+                        <select class="form-control" [(ngModel)]="data.fieldId" name="subjectGroupId"
+                            id="subjectGroupId">
+                            <option class="form-control" value="0">---Chọn---</option>
+                            <option class="form-control" selected *ngFor="let item of fieldData" value="{{item.id}}">
+                                {{item.title}}</option>
+                        </select>
+                    </div>
+                </div> -->
+
+                <div class="mb-3">
+                    <label>Nội dung chính*</label>
+                    <textarea rows="8" class="form-control" [(ngModel)]="data.note"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="me-2">Lĩnh vực</label>
+                    <div class="d-flex">
+                        <select class="form-control" [(ngModel)]="data.fieldId" name="subjectGroupId" id="subjectGroupId">
+                            <option class="form-control" value="0">---Chọn---</option>
+                            <option class="form-control" selected *ngFor="let item of fieldData" value="{{item.id}}">
+                                {{item.title}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label>Hạn phê duyệt</label>
+                        <input type="date" class="form-control" [(ngModel)]="DateEndApproval" />
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <div class="mb-3">
+                        <label>Ngày trình</label>
+                        <input type="datetime-local" class="form-control" [(ngModel)]="CreateDate" />
+
+                    </div>
+                </div> -->
+                <div class="mb-3">
+                    <label><input type="checkbox" checked /> Gửi SMS?</label>
+                </div>
+                <!--  -->
+            </div>
+        </div>
+        <div class="col-md-1 d-flex align-items-center justify-content-center">
+            <div class="vertical-divider"></div>
+        </div>
+        <!-- Cột phải -->
+        <div class="col-md-4">
+            <div class="mb-3 d-flex align-items-center justify-content-center">
+                <h5>File đính kèm</h5>
+            </div>
+            <!-- <div class="file-names-container align-items-center justify-content-center">
+                <ng-container *ngIf="selectedFileNamesArray.length > 0; else noFilesSelected">
+                    <div *ngFor="let fileName of selectedFileNamesArray" class="selected-file-names">{{
+                        fileName }}</div>
+                </ng-container>
+                <ng-template #noFilesSelected>
+                    <div class="selected-file-names">Chưa có file nào được chọn.</div>
+                </ng-template>
+            </div> -->
+
+
+            <div class="d-flex align-items-center justify-content-center ">
+                <img src="/assets/Images/img.png" class="w-50 mw-50" style="max-width: 150px" alt="Hình ảnh" />
+            </div>
+
+            <div class="d-flex align-items-center justify-content-center mb-3">
+                <input type="file" id="fileInput" (change)="onFileSelected($event)" multiple />
+                <label for="fileInput">Chọn file</label>
+            </div>
+            <div class="table-responsive">
+                <table *ngIf="files.length > 0" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tên File</th>
+                            <th scope="col">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let file of files; let i = index">
+                            <td>{{ file.name }}</td>
+                            <td>
+                                <button class="btn btn-info btn-sm me-1" (click)="moveFileUp(i)" [disabled]="i === 0">
+                                    <i class="fa-solid fa-up-long" style="color: #ffffff;"></i>
+                                </button>
+                                <button class="btn btn-secondary btn-sm  me-1" (click)="moveFileDown(i)"
+                                    [disabled]="i === files.length - 1">
+                                    <i class="fa-solid fa-down-long" style="color: #ffffff;"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm  me-1" (click)="deleteFile(i)">
+                                    <i class="fa-sharp fa-solid fa-trash" style="color: #ededed;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <div class="mx-2">
+                        <button [disabled]="waitForResponse" (click)="submit(true)" class="btn btn-success text-nowrap">
+                            Gửi tờ trình</button>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="mx-2">
+                        <button [disabled]="waitForResponse" type="button" class="btn btn-primary btn-block text-nowrap"
+                            (click)="submit(false)">
+                            Lưu tạm
+                        </button>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>

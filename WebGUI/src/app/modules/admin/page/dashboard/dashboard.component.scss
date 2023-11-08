@@ -1,0 +1,22 @@
+.card:hover{
+    transform: scale(1.1);
+    transition-duration: 0.8s;
+}
+.card{
+    cursor: pointer;
+}
+
+td{
+    background: none;
+}
+tr:hover{
+    transform: scale(1.01);
+    transition-duration: 0.5s;
+    background-color: lightgray
+}
+
+i:hover{
+    color: #d35400 !important;
+    transform: scale(1.2);
+    transition-duration: 0.5s;
+}

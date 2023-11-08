@@ -1,0 +1,120 @@
+<div class="container-fluid">    
+    <app-admin-header [title]="'QUẢN LÝ TỜ TRÌNH / Danh sách tờ trình'"></app-admin-header>        
+    <div class="border rounded-3 pt-2 ps-4 pe-3 mt-3">
+      <div class="d-flex"  style="align-items: center;">        
+        <div class="mt-2">
+          <button *ngIf="userRoles.specialist" class="btn btn-outline-primary" [routerLink]="['add']">Thêm mới tờ trình</button>
+        </div>    
+      </div>
+      <div class="d-flex mt-5">
+        <div class="fw-bolder">
+          <h4 *ngIf="code == '0'">Tất cả tờ trình</h4>
+          <h4 *ngIf="code == '2'">Danh sách tạm lưu</h4>
+          <h4 *ngIf="code == '3'">Tờ trình chờ phê duyệt</h4>
+          <h4 *ngIf="code == '4'">Tờ trình đã phê duyệt</h4>
+          <h4 *ngIf="code == '5'">Tờ trình đã duyệt và ý kiến</h4>
+          <h4 *ngIf="code == '6'">Tờ trình không được duyệt</h4>
+          <h4 *ngIf="code == '7'">Tờ trình quá hạn</h4>
+        </div>
+      </div>
+      <div style="overflow: auto;">
+        <table class="table">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">STT</th>
+              <th scope="col">Tên</th>
+              <th scope="col">Ngày trình</th>
+              <th scope="col">Ngày kết thúc</th>
+              <th scope="col">Người trình</th>
+              <th scope="col">Lĩnh vực</th>
+              <th *ngIf="code == '0'" scope="col">Trạng thái</th>
+              <th *ngIf="userRoles.approver" scope="col">Đánh giá của tôi</th>
+              <th scope="col">Hành động</th>
+            </tr>
+          </thead>
+          <tbody class="align-middle"
+            *ngFor="let document of documents | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{document.title}}</td>
+              <td>{{document.created | date: 'hh:mm aa dd/MM/yyyy'}}</td>
+              <td>{{document.dateEndApproval | date: 'dd/MM/yyyy'}}</td>
+              <td>{{document.authorName}}</td>
+              <td>{{document.fieldName}}</td>
+              <td *ngIf="code == '0'"
+                [ngClass]="document.statusCode == 2 ? '' 
+                : document.statusCode == 3 ? 'text-bg-warning' 
+                : document.statusCode == 4 ? 'text-bg-success' 
+                : document.statusCode == 5 ? 'text-bg-primary' 
+                : document.statusCode == 6 ? 'text-bg-danger' 
+                : 'text-bg-secondary'">
+                {{document.statusCode == 2 ? 'Tạm lưu' 
+                : document.statusCode == 3 ? 'Chờ duyệt' 
+                : document.statusCode == 4 ? 'Đã duyệt' 
+                : document.statusCode == 5 ? 'Ý kiến' 
+                : document.statusCode == 6 ? 'Không duyệt' 
+                : 'Quá hạn'}}</td>
+              <td *ngIf="userRoles.approver" [ngClass]="document.actionClass || ''">
+                {{document.approverAction}}
+              </td>              
+              <td>
+                <div>
+                  <div class="dropdown dropstart">
+                    <a class="btn btn-secondary" href="#" role="button" id="dropdownMenuLink-{{document.id}}" data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                      <i class="fas fa-bars"></i>
+                    </a>                  
+                    <ul class="dropdown-menu" style="padding: 5px 10px; box-shadow: 0 0 2px 4px #b4b4b4;" attr.aria-labelledby="dropdownMenuLink-{{document.id}}">   
+                      <div class="mt-2"></div>                            
+                      <div *ngIf="userRoles.approver">
+                        <div class="p-1 mt-1 w-100">
+                          <a [routerLink]="['document-detail', document.id]">
+                            <i class="fas fa-highlighter"></i> Xử lý
+                          </a>
+                        </div>
+                      </div>
+                      
+                      <div *ngIf="userRoles.specialist">
+                        <div class="p-1 mt-1">
+                          <a *ngIf="document.statusCode == 2 || document.statusCode == 6 || document.statusCode == 7" [routerLink]="['xu-ly', document.id]"><i class="fas fa-edit"></i> Chỉnh sửa</a>
+                        </div>
+                        <div class="p-1 mt-1">
+                          <a [routerLink]="['document-detail', document.id]"><i class="fas fa-eye"></i> Xem</a>
+                        </div>
+                        <div *ngIf="document.statusCode == 2 || document.statusCode == 6" (click)="updateStatus(document.id, 3)" class="p-1 mt-1">
+                          <i class="fas fa-share-square"></i> Gửi duyệt
+                        </div>
+                        <!-- <div *ngIf="document.statusCode == 3" (click)="updateStatus(document.id, 2)" class="p-1 mt-1">
+                          <i class="fas fa-retweet"></i> Hủy gửi duyệt
+                        </div>                         -->
+                        <div *ngIf="document.statusCode == 2"
+                          (click)="deleteDocument(document.id)" class="p-1 mt-1">
+                          <i class="fas fa-trash-alt"></i> Xóa
+                        </div>
+                      </div>
+                      
+                      <div *ngIf="userRoles.generalSpecialist">
+                        <div class="p-1 mt-1">
+                          <a [routerLink]="['document-detail', document.id]"><i class="fas fa-eye"></i> Xem</a>
+                        </div>
+                        <div class="p-1 mt-1">
+                          <a [routerLink]="['approval-summary', document.id]"><i class="fas fa-poll"></i> Kết quả duyệt</a>
+                        </div>
+                        <div *ngIf="document.statusCode == 3" (click)="remind(document.id)" class="p-1 mt-1">
+                          <i class="fas fa-bell"></i> Nhắc duyệt
+                        </div>
+                      </div>
+                      <div class="mb-2"></div>
+                    </ul>
+                  </div>                                    
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>    
+    <div class="mt-4 d-flex justify-content-end">
+      <pagination-controls [nextLabel]="'Sau'" [previousLabel]="'Trước'" [autoHide]="true" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>                
+</div>

@@ -1,0 +1,9 @@
+@media only screen and (max-width: 600px) {
+    iframe {
+      height: 50vh;
+    }
+  }
+
+  :host ::ng-deep .mat-mdc-tab-body-content{
+    overflow-x: hidden !important;
+}

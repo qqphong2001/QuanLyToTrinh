@@ -1,0 +1,61 @@
+<div class="row" style="height: 100%;">
+    <div class="col-md-2 d-none d-md-block pb-0" style="height: 100% !important; padding-right: 0 !important;" [style.maxWidth]="showDetails ? '' : '100px'">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white" style="height: 100%;  background-color: #0f3258 ;">
+            <div class="d-flex justify-content-between" style="align-items: center;">
+                <a *ngIf="showDetails" href="/admin" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <i class="fs-5 me-3 fas fa-clipboard-check"></i>
+                    <span class="fs-5">Quản lý tờ trình</span>
+                </a>
+                <i style="cursor: pointer;" (click)="toggle()" *ngIf="showDetails" class="fas fa-chevron-left"></i>
+                <i style="cursor: pointer;" (click)="toggle()" *ngIf="!showDetails" class="fas fa-chevron-right"></i>
+            </div>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <div *ngFor="let item of menuItems; let i = index">
+                    <li *ngIf="item.children.length == 0;" class="nav-item">
+                        <a [routerLink]="[item.path]" class="nav-link text-white" [routerLinkActive]="'active'" aria-current="page">
+                            <div class="d-flex justify-content-between align-items-center my-2">
+                                <div>
+                                    <i matTooltip="{{item.text}}" class="{{item.icon}} me-3"></i>
+                                    <span *ngIf="showDetails">{{item.text}}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>                    
+                </div>                
+            </ul>
+        </div>
+    </div>
+
+    <div class="col bg-dark-subtle">
+        <div class="d-flex justify-content-between d-block d-md-none p-3" style="background-color: #0f3258; align-items: start;">            
+            <div>
+                <i style="cursor: pointer;" (click)="toggleMobileMenu()" class="fas fa-bars text-white"></i>
+                <div *ngIf="showMobileMenu">
+                    <a (click)="toggleMobileMenu()" *ngFor="let item of menuItems; let i = index" [routerLink]="[item.path]" class="nav-link text-white my-3"
+                        [routerLinkActive]="'active'" aria-current="page">
+                        <div class="d-flex">
+                            <i class="{{item.icon}} me-3"></i>
+                            <span>{{item.text}}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>    
+            <div class="text-white d-flex" style="align-items: center;">
+                <!-- <div class="d-flex justify-content-start">
+                    <i id="noti-icon"
+                        class="icon-container fas fa-bell"></i>
+                    <sup style="margin-left: -10px;" class="text-danger"><i class="fas fa-circle"></i></sup>
+                </div> -->
+                <div>
+                    Đăng xuất <i (click)="logOut()" matTooltip="Đăng xuất" class="fas fa-sign-out-alt ms-1"></i>                
+                </div>
+            </div>   
+        </div>
+        <div class="p-2 bg-body" style="border-radius: 12px; height: 100%;">
+            <div class="p-sm-3">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

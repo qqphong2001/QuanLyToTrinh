@@ -1,0 +1,23 @@
+<div class="d-flex justify-content-between">
+    <h3 class="fw-bold">{{title}}</h3>
+    <div class="user-right">
+        <div class="d-flex justify-content-between" style="align-items: center;">  
+            <div class="d-flex justify-content-start me-md-4">                
+                <i (click)="openNotification()" id="noti-icon" matTooltip="{{haveNewAlert ? 'Bạn có thông báo mới' : 'Thông báo'}}" class="icon-container fas fa-bell text-info" style="font-size: 30px;"></i>                
+                <sup *ngIf="haveNewAlert" style="margin-left: -10px;" class="text-danger"><i class="fas fa-circle"></i></sup>
+            </div>          
+            
+            <div class="d-none d-md-block">
+                <div class="fs-6 mb-2 fw-bold">{{userInfo.displayName}}</div>
+                <div class="d-flex justify-content-end">
+                    <div>{{userInfo.roles[0]}}</div>
+                </div>
+            </div>
+            <div class="d-none d-md-block">
+                <i matTooltip="Đăng xuất" (click)="logOut()" class="fas fa-sign-out-alt ms-4 text-danger" style="font-size: 30px;"></i>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<hr>

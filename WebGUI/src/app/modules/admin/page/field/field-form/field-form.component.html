@@ -1,0 +1,36 @@
+<div class="modal-content">        
+    <div class="container">        
+        <div class="row">
+            <h5>Thông tin</h5>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="title">Tiêu đề danh mục*</label>
+                    <input type="text" class="form-control" id="title" [(ngModel)]="dataField.title" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="active">Trạng thái danh mục*</label>
+                    <select class="form-control" id="active" [(ngModel)]="dataField.active">
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 d-flex align-items-center justify-content-center">
+                <div class="vertical-divider"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <button (click)="submit(true)" class="btn btn-success btn-block">
+                        Thêm danh mục
+                    </button>
+                </div>
+            </div>           
+        </div>
+    </div>            
+</div>

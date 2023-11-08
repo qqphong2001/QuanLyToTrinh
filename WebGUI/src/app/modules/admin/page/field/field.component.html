@@ -1,0 +1,72 @@
+<app-admin-header [title]="'QUẢN LÝ DANH MỤC'"></app-admin-header>
+<div class="container container-fluid">
+    <div class="border rounded-3 pt-2 ps-4 pe-3 mt-3">
+        <div class="d-flex" style="align-items: center;">
+            <div class="mt-2">
+                <button *ngIf="specialistAction" class="btn btn-outline-primary" [routerLink]="['add']">Thêm mới danh
+                    mục</button>
+            </div>
+        </div>
+        <div style="overflow-x: scroll;">
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên lĩnh vực</th>
+                        <th scope="col">Trạng Thái</th>
+                        <th scope="col">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let document of fieldData | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{document.title}}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span *ngIf="document.active" class="text-success me-2">&#10004;</span>
+                                <span *ngIf="!document.active" class="text-danger me-2">&#10008;</span>
+                            </div>
+                        <td>
+                            <div>
+                                <div class="dropdown dropstart">
+                                    <a class="btn btn-secondary" href="#" role="button"
+                                        id="dropdownMenuLink-{{document.id}}" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class="fas fa-bars"></i>
+                                    </a>
+    
+                                    <ul class="dropdown-menu" style="padding: 5px 10px; box-shadow: 0 0 2px 4px #b4b4b4;"
+                                        attr.aria-labelledby="dropdownMenuLink-{{document.id}}">
+                                        <div class="mt-2"></div>
+                                        <div *ngIf="approverAction">
+                                            <a [routerLink]="['xu-ly', document.id]" class="p-1 mt-1">
+                                                <i class="fas fa-highlighter"></i> Xử lý
+                                            </a>
+                                        </div>
+    
+                                        <div *ngIf="specialistAction">
+                                            <div class="p-1 mt-1">
+                                                <a [routerLink]="['xu-ly', document.id]"><i class="fas fa-edit"></i> Chỉnh
+                                                    sửa</a>
+                                            </div>
+                                            <div (click)="deletefield(document.id)" class="p-1 mt-1">
+                                                <i class="fas fa-trash-alt"></i> Xóa
+                                            </div>
+                                        </div>
+    
+                                        <div class="mb-2"></div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-4 d-flex justify-content-end">
+                <pagination-controls [nextLabel]="'Sau'" [previousLabel]="'Trước'" [autoHide]="true"
+                    (pageChange)="currentPage = $event"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>
